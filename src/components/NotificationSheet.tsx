@@ -9,7 +9,7 @@ import { getNotifications, markNotificationRead } from "@/services/notificationS
 import type { Notification } from "@/types";
 
 export default function NotificationSheet() {
-  const { activeSheet, closeSheet, unreadCount, setUnreadCount } = useUiStore();
+  const { activeSheet, closeSheet, setUnreadCount } = useUiStore();
   const open = activeSheet === "notifications";
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
@@ -40,10 +40,9 @@ export default function NotificationSheet() {
   const handleMarkRead = async (id: number) => {
     try {
       await markNotificationRead(id);
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === id ? { ...n, is_read: true, read_at: new Date().toISOString() } : n))
-      );
-      setUnreadCount(Math.max(0, unreadCount - 1));
+      const fresh = await getNotifications();
+      setNotifications(fresh.notifications);
+      setUnreadCount(fresh.unread_count);
     } catch {
       // silent
     }
