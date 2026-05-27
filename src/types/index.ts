@@ -142,6 +142,7 @@ export interface Banner {
   sort_order: number;
   start_at: number | null;
   end_at: number | null;
+  countdown: number | null;
 }
 
 export interface Profile {

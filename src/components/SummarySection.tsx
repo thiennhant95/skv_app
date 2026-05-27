@@ -21,15 +21,22 @@ const fallback: DashboardData = {
   },
 };
 
-const productConfig: Array<{ key: keyof DashboardData; label: string; unit: string }> = [
+type ProductConfig = {
+  key: keyof DashboardData;
+  boxKey?: keyof DashboardData;
+  label: string;
+  unit: string;
+};
+
+const productConfig: ProductConfig[] = [
   { key: "totalProtandim", label: "Protandim", unit: "lọ" },
   { key: "totalImmucan", label: "Immucan", unit: "lọ" },
-  { key: "totalCoffee", label: "Coffee", unit: "hộp" },
-  { key: "totalKiddy", label: "Kiddy", unit: "hộp" },
-  { key: "totalTaodo", label: "Táo đỏ", unit: "hộp" },
+  { key: "totalKiddy", label: "Kiddy", unit: "hộp", boxKey: "totalKiddyBox" },
+  { key: "totalCoffee", label: "Coffee", unit: "hộp", boxKey: "totalCoffeeBox" },
+  { key: "totalFucoidan", label: "Fucoidan", unit: "hộp", boxKey: "totalFucoidanBox" },
+  { key: "totalNuoc", label: "Nước", unit: "hộp", boxKey: "totalNuocBox" },
+  { key: "totalTaodo", label: "Táo đỏ", unit: "hộp", boxKey: "totalTaodoBox" },
   { key: "totalProvegan", label: "Provegan", unit: "lọ" },
-  { key: "totalNuoc", label: "Nước", unit: "hộp" },
-  { key: "totalFucoidan", label: "Fucoidan", unit: "hộp" },
 ];
 
 export default function SummarySection() {
@@ -71,9 +78,12 @@ export default function SummarySection() {
   const personalQty = d.userFund.total_personal_quantity;
   const totalDoanhSo = d.totalDoanhSo;
 
-  const products = productConfig
-    .map((p) => ({ label: p.label, count: (d[p.key] as number) || 0, unit: p.unit }))
-    .filter((p) => p.count > 0);
+  const products = productConfig.map((p) => ({
+    label: p.label,
+    count: (d[p.key] as number) || 0,
+    unit: p.unit,
+    boxCount: p.boxKey ? ((d[p.boxKey] as number) || 0) : undefined,
+  }));
 
   return (
     <div className="mx-4 grid grid-cols-2 gap-2">
@@ -108,16 +118,15 @@ export default function SummarySection() {
         </div>
 
         <div className="mt-2 space-y-[1px]">
-          {products.length > 0 ? products.map((p) => (
+          {products.map((p) => (
             <div key={p.label} className="flex items-center justify-between rounded-lg px-1.5 py-0.5">
               <span className="text-xs text-gray-500">{p.label}</span>
               <span className="text-xs font-semibold text-gray-700">
                 {p.count.toLocaleString()} {p.unit}
+                {p.boxCount !== undefined && ` (${p.boxCount.toLocaleString()} combo)`}
               </span>
             </div>
-          )) : (
-            <p className="text-xs text-gray-400 text-center py-2">Chưa có dữ liệu</p>
-          )}
+          ))}
         </div>
       </motion.div>
 

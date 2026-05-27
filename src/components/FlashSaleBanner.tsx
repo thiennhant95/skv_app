@@ -6,20 +6,43 @@ import { Clock, Sparkles } from "lucide-react";
 import { getBanners } from "@/services/bannerService";
 import type { Banner } from "@/types";
 
+function formatCountdown(seconds: number): string {
+  if (seconds <= 0) return "";
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+}
+
 export default function FlashSaleBanner() {
   const [banner, setBanner] = useState<Banner | null>(null);
+  const [remaining, setRemaining] = useState<number | null>(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
     getBanners()
       .then((banners) => {
-        if (banners.length > 0) setBanner(banners[0]);
+        if (banners.length > 0) {
+          setBanner(banners[0]);
+          if (banners[0].countdown && banners[0].countdown > 0) {
+            setRemaining(banners[0].countdown);
+          }
+        }
       })
       .catch(() => setError(true));
   }, []);
 
+  useEffect(() => {
+    if (remaining === null || remaining <= 0) return;
+    const timer = setInterval(() => {
+      setRemaining((prev) => (prev !== null && prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [remaining]);
+
   const displayTitle = banner?.title || "Flash Sale giảm 20% NRF2";
   const displayContent = banner?.content || "";
+  const countdownText = remaining !== null && remaining > 0 ? formatCountdown(remaining) : null;
 
   if (error) return null;
 
@@ -47,7 +70,12 @@ export default function FlashSaleBanner() {
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-white truncate">{displayTitle}</p>
             {displayContent && (
-              <p className="text-[10px] text-white/80 truncate">{displayContent}</p>
+              <p className="text-sm font-semibold text-white/90 mt-0.5">{displayContent}</p>
+            )}
+            {countdownText && (
+              <p className="text-xs font-mono font-bold text-yellow-200 mt-1">
+                {countdownText}
+              </p>
             )}
           </div>
           {!banner?.image && <Sparkles className="h-4 w-4 text-white/40 shrink-0" />}
