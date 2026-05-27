@@ -3,12 +3,7 @@ import apiClient from "./apiClient";
 import type { ApiResponse } from "@/types";
 import { registerDeviceToken } from "./deviceTokenService";
 
-let initialized = false;
-
 export async function initFcmOnLogin(): Promise<void> {
-  if (initialized) return;
-  initialized = true;
-
   try {
     const ready = await initFirebase();
     if (!ready) {
