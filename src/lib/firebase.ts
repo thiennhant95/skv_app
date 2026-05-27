@@ -34,42 +34,45 @@ export async function initFirebase(): Promise<boolean> {
   return initPromise;
 }
 
-function getSwRegWithTimeout(ms = 3000): Promise<ServiceWorkerRegistration | undefined> {
-  return new Promise((resolve) => {
-    if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) {
-      resolve(undefined);
-      return;
+async function registerAndWaitForFirebaseSw(timeoutMs = 8000): Promise<ServiceWorkerRegistration | undefined> {
+  if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return undefined;
+
+  try {
+    const reg = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+    const started = Date.now();
+
+    // Poll until firebase SW becomes active, or timeout
+    while (Date.now() - started < timeoutMs) {
+      if (reg.active?.scriptURL?.includes("firebase-messaging-sw")) return reg;
+      await new Promise((r) => setTimeout(r, 200));
     }
-    const timer = setTimeout(() => resolve(undefined), ms);
-    navigator.serviceWorker.ready.then((reg) => {
-      clearTimeout(timer);
-      resolve(reg);
-    }).catch(() => {
-      clearTimeout(timer);
-      resolve(undefined);
-    });
-  });
+
+    return undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 export async function getFcmToken(): Promise<string | null> {
   if (!messaging) return null;
   if (!VAPID_KEY) return null;
 
-  // Đăng ký SW cho push background (fire-and-forget, không block)
-  if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/firebase-messaging-sw.js").catch(() => {});
+  // Cách 1: Register firebase-messaging-sw.js + đợi nó active, rồi dùng nó
+  const fbSw = await registerAndWaitForFirebaseSw();
+  if (fbSw) {
+    try {
+      const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: fbSw });
+      if (token) return token;
+    } catch { /* fallback */ }
   }
 
-  // Lấy SW registration với timeout
-  const swReg = await getSwRegWithTimeout();
-
-  // Gọi getToken với SW registration
+  // Cách 2: Không truyền SW – để Firebase tự detect
   try {
-    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
-    return token || null;
-  } catch {
-    return null;
-  }
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+    if (token) return token;
+  } catch { /* fallback */ }
+
+  return null;
 }
 
 export function onForegroundMessage(callback: (payload: any) => void): () => void {
