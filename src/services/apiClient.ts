@@ -37,7 +37,8 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response?.status === 401 && typeof window !== "undefined") {
+    const isLoginRequest = error.config?.url === "/login";
+    if (error.response?.status === 401 && !isLoginRequest && typeof window !== "undefined") {
       localStorage.removeItem("skv_token");
       localStorage.removeItem("skv_user");
       window.location.href = "/login";
