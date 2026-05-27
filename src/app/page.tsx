@@ -10,5 +10,6 @@ export default function RootPage() {
     router.replace("/splash");
   }, [router]);
 
-  return null;
+  return <></>;
 }
+
