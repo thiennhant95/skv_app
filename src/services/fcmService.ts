@@ -1,28 +1,20 @@
 import { initFirebase, getFcmToken } from "@/lib/firebase";
 import apiClient from "./apiClient";
 import type { ApiResponse } from "@/types";
-import { registerDeviceToken } from "./deviceTokenService";
 
 export async function initFcmOnLogin(): Promise<string | null> {
   try {
     const ready = await initFirebase();
-    if (!ready) {
-      await registerDeviceToken();
-      return null;
-    }
+    if (!ready) return null;
 
     const fcmToken = await getFcmToken();
-    if (fcmToken) {
-      await apiClient.post<ApiResponse<null>>("/device-token", {
-        device_token: fcmToken,
-      });
-      return fcmToken;
-    }
+    if (!fcmToken) return null;
 
-    await registerDeviceToken();
-    return null;
+    await apiClient.post<ApiResponse<null>>("/device-token", {
+      device_token: fcmToken,
+    });
+    return fcmToken;
   } catch {
-    try { await registerDeviceToken(); } catch { /* silent */ }
     return null;
   }
 }
