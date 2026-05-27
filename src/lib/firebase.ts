@@ -1,5 +1,5 @@
 import { initializeApp, getApps, type FirebaseApp } from "firebase/app";
-import { getMessaging, getToken, onMessage, isSupported, type Messaging } from "firebase/messaging";
+import { getMessaging, getToken, onMessage, type Messaging } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -17,9 +17,6 @@ export async function initFirebase(): Promise<boolean> {
   if (app) return true;
   if (!firebaseConfig.apiKey) return false;
 
-  const supported = await isSupported();
-  if (!supported) return false;
-
   if (!getApps().length) {
     app = initializeApp(firebaseConfig);
   } else {
@@ -27,10 +24,16 @@ export async function initFirebase(): Promise<boolean> {
   }
 
   try {
+    await navigator.serviceWorker.ready;
     messaging = getMessaging(app);
     return true;
   } catch {
-    return false;
+    try {
+      messaging = getMessaging(app);
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
 
@@ -41,7 +44,7 @@ export async function getFcmToken(): Promise<string | null> {
 
   try {
     const token = await getToken(messaging, { vapidKey });
-    return token;
+    return token || null;
   } catch {
     return null;
   }
