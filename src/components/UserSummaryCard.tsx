@@ -15,7 +15,7 @@ export default function UserSummaryCard({ user }: UserSummaryCardProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1, duration: 0.4 }}
-      className="mx-4 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 px-4 py-3 shadow-sm"
+      className="mx-4 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-100/50 px-4 py-3 shadow-sm"
     >
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
@@ -25,7 +25,7 @@ export default function UserSummaryCard({ user }: UserSummaryCardProps) {
             {user.title || `Level ${user.level}`}
           </span>
         </div>
-        <div className="flex items-center gap-1.5 rounded-xl bg-white/70 px-3 py-1.5 backdrop-blur-sm whitespace-nowrap shrink-0">
+        <div className="flex items-center gap-1.5 rounded-xl bg-white/80 border border-amber-100/50 px-3 py-1.5 backdrop-blur-sm whitespace-nowrap shrink-0">
           <span className="text-xs text-gray-500">Chiết khấu:</span>
           <span className="text-sm font-bold text-amber-600">{discountText}</span>
         </div>

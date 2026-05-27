@@ -46,7 +46,6 @@ const actions = [
     gradient: "from-pink-50 to-rose-50",
     iconBg: "bg-pink-100",
     iconColor: "text-pink-600",
-    action: () => {},
   },
 ];
 
@@ -75,7 +74,7 @@ export default function ActionCards() {
               }
             }}
             aria-label={item.title}
-            className={`flex items-center gap-2.5 rounded-2xl bg-gradient-to-br ${item.gradient} py-[26px] px-3 text-left shadow-sm transition-shadow active:shadow-md`}
+            className={`flex items-center gap-2.5 rounded-2xl bg-gradient-to-br ${item.gradient} border border-gray-100/50 py-[26px] px-3 text-left shadow-sm transition-all active:shadow-none`}
           >
             <div
               className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${item.iconBg} ${item.iconColor}`}

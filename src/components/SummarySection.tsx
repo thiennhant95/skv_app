@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Package, TrendingUp, Medal, ChevronRight } from "lucide-react";
+import { Package, TrendingUp, Medal, ChevronRight, Luggage, Gift, Users } from "lucide-react";
 import { getDashboard } from "@/services/dashboardService";
 import { getCompetitionTop } from "@/services/competitionService";
 import { useUiStore } from "@/store/uiStore";
@@ -77,11 +77,12 @@ export default function SummarySection() {
 
   return (
     <div className="mx-4 grid grid-cols-2 gap-2">
+      {/* Sales Card */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.2, duration: 0.4 }}
-        className="rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 p-2.5 shadow-sm"
+        className="rounded-2xl bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-100/40 p-2.5 shadow-sm"
       >
         <div className="mb-2 flex items-center gap-2">
           <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100">
@@ -94,7 +95,7 @@ export default function SummarySection() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 border-t border-emerald-100/50 pt-2">
+        <div className="flex items-center gap-2 border-t border-emerald-100/30 pt-2">
           <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100">
             <TrendingUp className="h-3 w-3 text-emerald-600" />
           </div>
@@ -107,25 +108,25 @@ export default function SummarySection() {
         </div>
 
         <div className="mt-2 space-y-[1px]">
-          {products.map((p) => (
+          {products.length > 0 ? products.map((p) => (
             <div key={p.label} className="flex items-center justify-between rounded-lg px-1.5 py-0.5">
               <span className="text-xs text-gray-500">{p.label}</span>
               <span className="text-xs font-semibold text-gray-700">
                 {p.count.toLocaleString()} {p.unit}
               </span>
             </div>
-          ))}
-          {products.length === 0 && (
+          )) : (
             <p className="text-xs text-gray-400 text-center py-2">Chưa có dữ liệu</p>
           )}
         </div>
       </motion.div>
 
+      {/* Ranking Card */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.25, duration: 0.4 }}
-        className="rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 p-2.5 shadow-sm"
+        className="rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100/40 p-2.5 shadow-sm"
       >
         <div className="mb-2 flex items-center gap-2">
           <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-100">
@@ -169,32 +170,33 @@ export default function SummarySection() {
         </button>
       </motion.div>
 
+      {/* Fund Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.4 }}
-        className="col-span-2 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 p-3 shadow-sm"
+        className="col-span-2 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100/40 p-3 shadow-sm"
       >
         <div className="mb-2 flex items-center gap-2">
           <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-100">
-            <Package className="h-3 w-3 text-blue-600" />
+            <Luggage className="h-3 w-3 text-blue-600" />
           </div>
           <p className="text-sm font-semibold text-gray-700">Quỹ</p>
         </div>
         <div className="grid grid-cols-3 gap-2">
-          <div className="rounded-xl bg-white/60 p-2">
+          <div className="rounded-xl bg-white/70 border border-blue-100/30 p-2">
             <p className="text-[10px] font-medium text-gray-400">Du lịch</p>
             <p className="text-sm font-bold text-blue-600">
               {d.userFund.remain_travel.toLocaleString()} ₫
             </p>
           </div>
-          <div className="rounded-xl bg-white/60 p-2">
+          <div className="rounded-xl bg-white/70 border border-blue-100/30 p-2">
             <p className="text-[10px] font-medium text-gray-400">Cuối năm</p>
             <p className="text-sm font-bold text-emerald-600">
               {d.userFund.remain_reward.toLocaleString()} ₫
             </p>
           </div>
-          <div className="rounded-xl bg-white/60 p-2">
+          <div className="rounded-xl bg-white/70 border border-blue-100/30 p-2">
             <p className="text-[10px] font-medium text-gray-400">Cộng đồng</p>
             <p className="text-sm font-bold text-amber-600">
               {d.userFund.remain_community.toLocaleString()} ₫
