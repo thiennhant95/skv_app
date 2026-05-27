@@ -38,6 +38,16 @@ export async function getFcmToken(): Promise<string | null> {
   if (!vapidKey) return null;
 
   try {
+    if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      const hasFirebaseSw = registrations.some(
+        (r) => r.active && r.active?.scriptURL?.includes("firebase-messaging-sw")
+      );
+      if (!hasFirebaseSw) {
+        await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+      }
+    }
+
     const token = await getToken(messaging, { vapidKey });
     return token || null;
   } catch {
