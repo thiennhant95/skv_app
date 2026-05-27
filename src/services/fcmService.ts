@@ -16,12 +16,6 @@ export async function initFcmOnLogin(): Promise<void> {
       return;
     }
 
-    const perm = await Notification.requestPermission();
-    if (perm !== 'granted') {
-      await registerDeviceToken();
-      return;
-    }
-
     const fcmToken = await getFcmToken();
     if (fcmToken) {
       await apiClient.post<ApiResponse<null>>("/device-token", {

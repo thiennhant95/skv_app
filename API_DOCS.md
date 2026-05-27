@@ -450,10 +450,14 @@ Authorization: Bearer <token>
         "css_class": "bg-blue",
         "image": "https://protandimnrf2.vn/uploads/notify.jpg",
         "read_at": null,
-        "is_read": false
+        "is_read": false,
+        "icon": "info"
       }
     ],
-    "unread_count": 5
+    "unread_count": 5,
+    "total": 10,
+    "page": 1,
+    "limit": 20
   }
 }
 ```
@@ -462,6 +466,14 @@ Authorization: Bearer <token>
 - `user_id: null` means global notification (visible to all users)
 - `user_id: <id>` means personal notification (visible only to that user)
 - `read_at: null` means unread, `is_read` is a convenience boolean
+- `icon`: one of `info`, `success`, `warning`, `error` — mapped from `css_class`
+
+| `css_class` | `icon` |
+|---|---|
+| `bg-blue` | `info` |
+| `bg-green`, `bg-teal`, `bg-olive` | `success` |
+| `bg-navy` | `warning` |
+| `bg-red`, `bg-pink` | `error` |
 
 ### PUT /api/notification/read/{id}
 
