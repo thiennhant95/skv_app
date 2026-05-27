@@ -1,17 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RefreshCw, RotateCcw } from "lucide-react";
 
 export default function UpdateNotification() {
   const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
   const [show, setShow] = useState(false);
+  const regRef = useRef<ServiceWorkerRegistration | null>(null);
 
   useEffect(() => {
     if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
 
     navigator.serviceWorker.register("/sw.js").then((reg) => {
+      regRef.current = reg;
+
       if (reg.waiting) {
         setWaitingWorker(reg.waiting);
         setShow(true);
@@ -29,6 +32,13 @@ export default function UpdateNotification() {
         }
       });
     });
+
+    // Auto-check update mỗi 30 phút (bắt cả TH user online lại sau khi offline)
+    const interval = setInterval(() => {
+      regRef.current?.update();
+    }, 30 * 60 * 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleUpdate = () => {
