@@ -34,20 +34,40 @@ export async function initFirebase(): Promise<boolean> {
   return initPromise;
 }
 
+async function waitForActive(reg: ServiceWorkerRegistration): Promise<ServiceWorkerRegistration | undefined> {
+  if (reg.active) return reg;
+  const sw = reg.installing || reg.waiting;
+  if (!sw) return undefined;
+  if (sw.state === "activated") return reg;
+  await new Promise<void>((resolve) => {
+    sw.addEventListener("statechange", function handler() {
+      if (sw.state === "activated") { sw.removeEventListener("statechange", handler); resolve(); }
+    });
+  });
+  return reg.active ? reg : undefined;
+}
+
 async function getSwReg(): Promise<ServiceWorkerRegistration | undefined> {
   if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return undefined;
 
-  const existing = await navigator.serviceWorker.getRegistrations();
-  const pushSw = existing.find((r) => r.active?.scriptURL?.includes("firebase-messaging-sw"));
-  if (pushSw?.active) return pushSw;
+  const registrations = await navigator.serviceWorker.getRegistrations();
 
+  // Try to find existing firebase SW
+  const existing = registrations.find((r) => r.active?.scriptURL?.includes("firebase-messaging-sw"));
+  if (existing?.active) return existing;
+
+  // Try to register firebase SW
   try {
     const reg = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
-    await navigator.serviceWorker.ready;
-    return reg;
+    const active = await waitForActive(reg);
+    if (active) return active;
   } catch {
-    return undefined;
+    // register failed, continue to fallback
   }
+
+  // Fallback: use any active SW (even next-pwa's sw.js)
+  const anyActive = registrations.find((r) => r.active);
+  return anyActive || undefined;
 }
 
 export async function getFcmToken(): Promise<string | null> {
