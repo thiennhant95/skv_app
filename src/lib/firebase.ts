@@ -32,14 +32,12 @@ export async function initFirebase(): Promise<boolean> {
   return initPromise;
 }
 
-async function ensureFirebaseSw(): Promise<ServiceWorkerRegistration | undefined> {
+async function getSwReg(): Promise<ServiceWorkerRegistration | undefined> {
   if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return undefined;
 
-  const registrations = await navigator.serviceWorker.getRegistrations();
-  const existing = registrations.find((r) =>
-    r.active?.scriptURL?.includes("firebase-messaging-sw")
-  );
-  if (existing?.active) return existing;
+  const existing = await navigator.serviceWorker.getRegistrations();
+  const pushSw = existing.find((r) => r.active?.scriptURL?.includes("firebase-messaging-sw"));
+  if (pushSw?.active) return pushSw;
 
   try {
     const reg = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
@@ -56,12 +54,8 @@ export async function getFcmToken(): Promise<string | null> {
   if (!vapidKey) return null;
 
   try {
-    const swRegistration = await ensureFirebaseSw();
-
-    const token = await getToken(messaging, {
-      vapidKey,
-      serviceWorkerRegistration: swRegistration,
-    });
+    const swReg = await getSwReg();
+    const token = await getToken(messaging, { vapidKey, serviceWorkerRegistration: swReg });
     return token || null;
   } catch {
     return null;
