@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
+import { useUiStore } from "@/store/uiStore";
+import { getNotifications } from "@/services/notificationService";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import NetworkStatus from "@/components/NetworkStatus";
 import { HomeSkeleton } from "@/components/ui/skeleton";
@@ -22,6 +24,7 @@ import WebViewSheet from "@/components/WebViewSheet";
 export default function HomePage() {
   const router = useRouter();
   const { isAuthenticated, isLoading, user, hydrate } = useAuthStore();
+  const { setUnreadCount } = useUiStore();
 
   useEffect(() => {
     hydrate();
@@ -32,6 +35,14 @@ export default function HomePage() {
       router.replace("/login");
     }
   }, [isLoading, isAuthenticated, router]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      getNotifications()
+        .then((data) => setUnreadCount(data.unread_count))
+        .catch(() => {});
+    }
+  }, [isAuthenticated, setUnreadCount]);
 
   if (isLoading) {
     return (
