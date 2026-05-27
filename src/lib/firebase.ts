@@ -13,7 +13,6 @@ const firebaseConfig = {
 let app: FirebaseApp | null = null;
 let messaging: Messaging | null = null;
 let initPromise: Promise<boolean> | null = null;
-let pushSwRegistration: ServiceWorkerRegistration | null = null;
 
 export async function initFirebase(): Promise<boolean> {
   if (app) return true;
@@ -33,39 +32,13 @@ export async function initFirebase(): Promise<boolean> {
   return initPromise;
 }
 
-async function getPushSwRegistration(): Promise<ServiceWorkerRegistration | undefined> {
-  if (pushSwRegistration) return pushSwRegistration;
-
-  if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return undefined;
-
-  const existing = await navigator.serviceWorker.getRegistrations();
-  const found = existing.find((r) => r.active?.scriptURL?.includes("firebase-messaging-sw"));
-  if (found) {
-    pushSwRegistration = found;
-    return found;
-  }
-
-  try {
-    const reg = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
-    pushSwRegistration = reg;
-    return reg;
-  } catch {
-    return undefined;
-  }
-}
-
 export async function getFcmToken(): Promise<string | null> {
   if (!messaging) return null;
   const vapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
   if (!vapidKey) return null;
 
   try {
-    const swRegistration = await getPushSwRegistration();
-
-    const token = await getToken(messaging, {
-      vapidKey,
-      serviceWorkerRegistration: swRegistration,
-    });
+    const token = await getToken(messaging, { vapidKey });
     return token || null;
   } catch {
     return null;
