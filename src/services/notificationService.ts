@@ -13,3 +13,7 @@ export async function getNotifications(page = 1): Promise<NotificationsData> {
 export async function markNotificationRead(id: number): Promise<void> {
   await apiClient.put(`/notification/read/${id}`);
 }
+
+export async function markAllNotificationsRead(): Promise<void> {
+  await apiClient.put("/notifications/read-all");
+}

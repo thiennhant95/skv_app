@@ -2,10 +2,10 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, Clock, Loader2, ArrowLeft, Calendar, ChevronDown } from "lucide-react";
+import { Bell, Clock, Loader2, ArrowLeft, Calendar, ChevronDown, CheckCircle2 } from "lucide-react";
 import BottomSheet from "@/components/ui/bottom-sheet";
 import { useUiStore } from "@/store/uiStore";
-import { getNotifications, markNotificationRead } from "@/services/notificationService";
+import { getNotifications, markNotificationRead, markAllNotificationsRead } from "@/services/notificationService";
 import type { Notification } from "@/types";
 
 export default function NotificationSheet() {
@@ -138,6 +138,21 @@ export default function NotificationSheet() {
         </div>
       ) : (
         <div className="pb-4">
+          {notifications.some((n) => !n.is_read) && (
+            <button
+              onClick={async () => {
+                try {
+                  await markAllNotificationsRead();
+                  setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+                  setUnreadCount(0);
+                } catch { /* silent */ }
+              }}
+              className="mb-3 flex w-full items-center justify-center gap-1.5 rounded-xl bg-amber-50 py-2.5 text-xs font-medium text-amber-600 transition-colors hover:bg-amber-100"
+            >
+              <CheckCircle2 className="h-4 w-4" />
+              Đánh dấu tất cả đã đọc
+            </button>
+          )}
           <div className="space-y-2">
             {notifications.map((notif, index) => (
               <motion.button
