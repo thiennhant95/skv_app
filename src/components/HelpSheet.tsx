@@ -61,6 +61,9 @@ export default function HelpSheet() {
             <CheckCircle className="h-4 w-4 text-blue-500 shrink-0" />
             Icon SKV CTV sẽ hiện trên màn hình chính
           </div>
+          <div className="mt-2 rounded-xl bg-amber-50 px-4 py-2.5 text-xs text-amber-700">
+            💡 Mở app từ màn hình chính → chọn <strong>Cho phép thông báo</strong> để nhận push notification
+          </div>
         </Section>
 
         {/* Hoàn tất */}

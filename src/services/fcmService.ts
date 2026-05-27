@@ -11,6 +11,10 @@ export async function initFcmOnLogin(): Promise<string | null> {
       return null;
     }
 
+    if (typeof Notification !== "undefined" && Notification.permission === "default") {
+      await Notification.requestPermission();
+    }
+
     const fcmToken = await getFcmToken();
     if (fcmToken) {
       await apiClient.post<ApiResponse<null>>("/device-token", {
