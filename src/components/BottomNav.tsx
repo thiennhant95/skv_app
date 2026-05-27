@@ -24,9 +24,9 @@ export default function BottomNav() {
   const { openSheet, unreadCount } = useUiStore();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 pb-safe" role="navigation" aria-label="Điều hướng chính">
+    <nav className="fixed bottom-0 left-0 right-0 z-40" role="navigation" aria-label="Điều hướng chính">
       <div className="mx-auto max-w-md">
-        <div className="mx-3 mb-1.5 rounded-2xl border border-gray-100/80 bg-white/90 px-2 shadow-lg shadow-gray-200/50 backdrop-blur-xl">
+        <div className="mx-3 mb-0.5 rounded-2xl border border-gray-100/80 bg-white/90 px-2 shadow-lg shadow-gray-200/50 backdrop-blur-xl">
           <div className="flex items-center justify-around">
             {navItems.map((item) => {
               const Icon = item.icon;

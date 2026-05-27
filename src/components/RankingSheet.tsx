@@ -2,11 +2,13 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Trophy, Medal, Award, Loader2, Star, ChevronRight } from "lucide-react";
+import { Trophy, Medal, Award, Loader2, Star, ChevronDown } from "lucide-react";
 import BottomSheet from "@/components/ui/bottom-sheet";
 import { useUiStore } from "@/store/uiStore";
 import { getCompetitionTop } from "@/services/competitionService";
 import type { CompetitionItem } from "@/types";
+
+const PAGE_SIZE = 15;
 
 function getRankUI(rank: number) {
   if (rank === 1) return { cls: "bg-yellow-400 text-white", icon: <Trophy className="h-3.5 w-3.5 text-white" /> };
@@ -20,16 +22,19 @@ export default function RankingSheet() {
   const open = activeSheet === "ranking";
   const [items, setItems] = useState<CompetitionItem[]>([]);
   const [total, setTotal] = useState(0);
+  const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
 
   const fetchRankings = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const data = await getCompetitionTop(15, 0);
+      const data = await getCompetitionTop(PAGE_SIZE, 0);
       setItems(data.items);
       setTotal(data.total);
+      setOffset(PAGE_SIZE);
     } catch {
       setError("Không thể tải bảng xếp hạng");
     } finally {
@@ -37,9 +42,25 @@ export default function RankingSheet() {
     }
   }, []);
 
+  const loadMore = async () => {
+    setLoadingMore(true);
+    try {
+      const data = await getCompetitionTop(PAGE_SIZE, offset);
+      setItems((prev) => [...prev, ...data.items]);
+      setOffset((prev) => prev + PAGE_SIZE);
+    } catch { /* silent */ }
+    finally { setLoadingMore(false); }
+  };
+
   useEffect(() => {
-    if (open) fetchRankings();
+    if (open) {
+      setItems([]);
+      setOffset(0);
+      fetchRankings();
+    }
   }, [open, fetchRankings]);
+
+  const showing = items.length;
 
   return (
     <BottomSheet open={open} onClose={closeSheet} title="Bảng xếp hạng">
@@ -105,13 +126,18 @@ export default function RankingSheet() {
             </div>
           )}
 
-          {total > items.length && (
-            <div className="mt-3 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 px-2.5 py-2 flex items-center gap-2">
-              <Award className="h-5 w-5 text-amber-500 shrink-0" />
-              <p className="text-xs text-gray-600">
-                Hiển thị 15/15 kết quả. Bảng xếp hạng được cập nhật theo tháng.
-              </p>
-            </div>
+          {total > showing && (
+            <button
+              onClick={loadMore}
+              disabled={loadingMore}
+              className="mt-3 flex w-full items-center justify-center gap-1 rounded-xl bg-amber-50 py-2.5 text-xs font-medium text-amber-600 transition-colors hover:bg-amber-100 disabled:opacity-50"
+            >
+              {loadingMore ? (
+                <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Đang tải...</>
+              ) : (
+                <>Xem thêm ({showing}/{total}) <ChevronDown className="h-3.5 w-3.5" /></>
+              )}
+            </button>
           )}
         </div>
       )}

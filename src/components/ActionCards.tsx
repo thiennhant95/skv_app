@@ -40,7 +40,8 @@ const actions = [
     iconColor: "text-cyan-600",
   },
   {
-    title: "Khuyến mãi",
+    title: "Khuyến mãi & Tin tức",
+    description: "Chương trình ưu đãi và tin tức mới",
     icon: Gift,
     gradient: "from-pink-50 to-rose-50",
     iconBg: "bg-pink-100",
@@ -58,7 +59,7 @@ export default function ActionCards() {
     <div className="mx-4 grid grid-cols-2 gap-2" role="group" aria-label="Tính năng nhanh">
       {actions.map((item, index) => {
         const Icon = item.icon;
-        const isPromotion = item.title === "Khuyến mãi";
+        const isPromotion = item.title === "Khuyến mãi & Tin tức";
         return (
           <motion.button
             key={item.title}
@@ -74,7 +75,7 @@ export default function ActionCards() {
               }
             }}
             aria-label={item.title}
-            className={`flex items-center gap-2.5 rounded-2xl bg-gradient-to-br ${item.gradient} py-[22px] px-3 text-left shadow-sm transition-shadow active:shadow-md`}
+            className={`flex items-center gap-2.5 rounded-2xl bg-gradient-to-br ${item.gradient} py-[26px] px-3 text-left shadow-sm transition-shadow active:shadow-md`}
           >
             <div
               className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${item.iconBg} ${item.iconColor}`}

@@ -131,7 +131,7 @@ export default function SummarySection() {
 
         <div className="space-y-1">
           {rankings.length > 0 ? rankings.map((member) => (
-            <div key={member.rank} className="flex items-center gap-1 rounded-xl px-1.5 py-1">
+            <div key={member.rank} className="flex items-center gap-1.5 rounded-xl px-2.5 py-2">
               <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[8px] font-bold ${
                 member.rank === 1 ? "bg-yellow-400 text-white" :
                 member.rank === 2 ? "bg-gray-300 text-white" :
