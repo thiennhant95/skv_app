@@ -15,7 +15,6 @@ const VAPID_KEY = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY || "BE8G2Ve4fyOoe1V
 let app: FirebaseApp | null = null;
 let messaging: Messaging | null = null;
 let initPromise: Promise<boolean> | null = null;
-let tokenPromise: Promise<string | null> | null = null;
 
 export async function initFirebase(): Promise<boolean> {
   if (app) return true;
@@ -35,34 +34,42 @@ export async function initFirebase(): Promise<boolean> {
   return initPromise;
 }
 
+function getAnySwRegistration(): Promise<ServiceWorkerRegistration | undefined> {
+  return new Promise((resolve) => {
+    if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) {
+      resolve(undefined);
+      return;
+    }
+    const timeout = setTimeout(() => resolve(undefined), 5000);
+
+    navigator.serviceWorker.ready.then((reg) => {
+      clearTimeout(timeout);
+      resolve(reg);
+    }).catch(() => {
+      clearTimeout(timeout);
+      resolve(undefined);
+    });
+  });
+}
+
 export async function getFcmToken(): Promise<string | null> {
   if (!messaging) return null;
   if (!VAPID_KEY) return null;
-  if (tokenPromise) return tokenPromise;
 
-  tokenPromise = (async () => {
-    // Register firebase-messaging-sw.js để push handler hoạt động
+  try {
+    // Fire & forget: register SW for background push (không block)
     if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
-      try {
-        await navigator.serviceWorker.register("/firebase-messaging-sw.js");
-      } catch { /* silent */ }
+      navigator.serviceWorker.register("/firebase-messaging-sw.js").catch(() => {});
     }
 
-    // Dùng navigator.serviceWorker.ready để getToken
-    // ready luôn trả về SW registration đang active
-    try {
-      let swReg: ServiceWorkerRegistration | undefined;
-      if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
-        swReg = await navigator.serviceWorker.ready;
-      }
-      const token = await getToken(messaging!, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
-      return token || null;
-    } catch {
-      return null;
-    }
-  })();
+    // Lấy SW registration đang active với timeout
+    const swReg = await getAnySwRegistration();
 
-  return tokenPromise;
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+    return token || null;
+  } catch {
+    return null;
+  }
 }
 
 export function onForegroundMessage(callback: (payload: any) => void): () => void {
