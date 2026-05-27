@@ -38,24 +38,33 @@ export async function getFcmToken(): Promise<string | null> {
   if (!messaging) return null;
   if (!VAPID_KEY) return null;
 
+  // Thử cách 1: không truyền SW – để Firebase tự detect
   try {
-    // Để Firebase tự detect SW (standard approach)
-    // Firebase sẽ tìm /firebase-messaging-sw.js ở root
     const token = await getToken(messaging, { vapidKey: VAPID_KEY });
-    return token || null;
-  } catch {
-    // Fallback: thử lại với SW registration hiện tại
-    try {
-      if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
-        const swReg = await navigator.serviceWorker.ready;
-        const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
-        return token || null;
-      }
-      return null;
-    } catch {
-      return null;
+    if (token) return token;
+  } catch { /* fallback */ }
+
+  // Thử cách 2: dùng SW registration hiện tại (sw.js từ next-pwa)
+  try {
+    if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+      const swReg = await navigator.serviceWorker.ready;
+      const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+      if (token) return token;
     }
-  }
+  } catch { /* fallback */ }
+
+  // Thử cách 3: register firebase-messaging-sw.js riêng
+  try {
+    if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+      const reg = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+      if (reg.active) {
+        const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
+        if (token) return token;
+      }
+    }
+  } catch { /* fallback */ }
+
+  return null;
 }
 
 export function onForegroundMessage(callback: (payload: any) => void): () => void {
