@@ -12,25 +12,35 @@ const firebaseConfig = {
 
 let app: FirebaseApp | null = null;
 let messaging: Messaging | null = null;
+let initPromise: Promise<boolean> | null = null;
 
 export async function initFirebase(): Promise<boolean> {
   if (app) return true;
   if (!firebaseConfig.apiKey) return false;
+  if (initPromise) return initPromise;
 
-  if (!getApps().length) {
-    app = initializeApp(firebaseConfig);
-  } else {
-    app = getApps()[0];
-  }
+  initPromise = (async () => {
+    if (!getApps().length) {
+      app = initializeApp(firebaseConfig);
+    } else {
+      app = getApps()[0];
+    }
 
-  try {
-    await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-    await navigator.serviceWorker.ready;
-    messaging = getMessaging(app);
-    return true;
-  } catch {
-    return false;
-  }
+    try {
+      if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        const hasSw = registrations.some((r) => r.active || r.installing || r.waiting);
+        if (!hasSw) return false;
+      }
+
+      messaging = getMessaging(app);
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+  return initPromise;
 }
 
 export async function getFcmToken(): Promise<string | null> {

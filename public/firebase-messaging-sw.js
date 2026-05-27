@@ -1,9 +1,5 @@
-try { importScripts('/sw.js'); } catch (e) {}
-
 importScripts("https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js");
 importScripts("https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js");
-
-self.skipWaiting();
 
 firebase.initializeApp({
   apiKey: "AIzaSyAdZDw7vSlaobnzXO8IeEFQ0FhTM80OoRY",
@@ -15,10 +11,6 @@ firebase.initializeApp({
 });
 
 const messaging = firebase.messaging();
-
-self.addEventListener('activate', () => {
-  self.clients.claim();
-});
 
 messaging.onBackgroundMessage((payload) => {
   const d = payload.data || {};
