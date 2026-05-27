@@ -24,18 +24,12 @@ export async function initFirebase(): Promise<boolean> {
   }
 
   try {
+    await navigator.serviceWorker.register('/firebase-messaging-sw.js');
     await navigator.serviceWorker.ready;
     messaging = getMessaging(app);
     return true;
   } catch {
-    try {
-      await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-      await navigator.serviceWorker.ready;
-      messaging = getMessaging(app);
-      return true;
-    } catch {
-      return false;
-    }
+    return false;
   }
 }
 

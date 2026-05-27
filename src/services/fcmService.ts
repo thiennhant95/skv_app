@@ -7,6 +7,9 @@ export async function initFcmOnLogin(): Promise<string | null> {
     const ready = await initFirebase();
     if (!ready) return null;
 
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") return null;
+
     const fcmToken = await getFcmToken();
     if (!fcmToken) return null;
 
