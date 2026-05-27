@@ -122,6 +122,14 @@ export interface DashboardData {
     fund_reward: number;
     fund_community: number;
     total_fund: number;
+    paid_travel: number;
+    paid_reward: number;
+    paid_community: number;
+    paid_total: number;
+    remain_travel: number;
+    remain_reward: number;
+    remain_community: number;
+    remain_total: number;
   };
 }
 

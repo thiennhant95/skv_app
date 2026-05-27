@@ -13,7 +13,12 @@ const fallback: DashboardData = {
   totalFucoidan: 0, totalNuoc: 0, totalTaodo: 0, totalProvegan: 0,
   totalKiddyBox: 0, totalCoffeeBox: 0, totalFucoidanBox: 0, totalNuocBox: 0, totalTaodoBox: 0,
   totalDoanhSo: 0, totalAmount: 0,
-  userFund: { total_personal_quantity: 0, total_system_quantity: 0, total_quantity: 0, fund_travel: 0, fund_reward: 0, fund_community: 0, total_fund: 0 },
+  userFund: {
+    total_personal_quantity: 0, total_system_quantity: 0, total_quantity: 0,
+    fund_travel: 0, fund_reward: 0, fund_community: 0, total_fund: 0,
+    paid_travel: 0, paid_reward: 0, paid_community: 0, paid_total: 0,
+    remain_travel: 0, remain_reward: 0, remain_community: 0, remain_total: 0,
+  },
 };
 
 const productConfig: Array<{ key: keyof DashboardData; label: string; unit: string }> = [
@@ -162,6 +167,40 @@ export default function SummarySection() {
           Xem chi tiết
           <ChevronRight className="h-4 w-4" />
         </button>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.4 }}
+        className="col-span-2 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 p-3 shadow-sm"
+      >
+        <div className="mb-2 flex items-center gap-2">
+          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-100">
+            <Package className="h-3 w-3 text-blue-600" />
+          </div>
+          <p className="text-sm font-semibold text-gray-700">Quỹ</p>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          <div className="rounded-xl bg-white/60 p-2">
+            <p className="text-[10px] font-medium text-gray-400">Du lịch</p>
+            <p className="text-sm font-bold text-blue-600">
+              {d.userFund.remain_travel.toLocaleString()} ₫
+            </p>
+          </div>
+          <div className="rounded-xl bg-white/60 p-2">
+            <p className="text-[10px] font-medium text-gray-400">Cuối năm</p>
+            <p className="text-sm font-bold text-emerald-600">
+              {d.userFund.remain_reward.toLocaleString()} ₫
+            </p>
+          </div>
+          <div className="rounded-xl bg-white/60 p-2">
+            <p className="text-[10px] font-medium text-gray-400">Cộng đồng</p>
+            <p className="text-sm font-bold text-amber-600">
+              {d.userFund.remain_community.toLocaleString()} ₫
+            </p>
+          </div>
+        </div>
       </motion.div>
     </div>
   );
