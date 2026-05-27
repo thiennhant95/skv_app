@@ -20,6 +20,7 @@ import ProfileSheet from "@/components/ProfileSheet";
 import HelpSheet from "@/components/HelpSheet";
 import RankingSheet from "@/components/RankingSheet";
 import WebViewSheet from "@/components/WebViewSheet";
+import PullToRefresh from "@/components/PullToRefresh";
 
 export default function HomePage() {
   const router = useRouter();
@@ -61,23 +62,25 @@ export default function HomePage() {
       <div className="flex h-dvh flex-col bg-gray-50/50">
         <NetworkStatus />
         <Header />
-        <main className="flex-1 overflow-y-auto scrollbar-hide px-0 pb-4" role="main">
-          <ErrorBoundary>
-            <FlashSaleBanner />
-          </ErrorBoundary>
-          <div className="mt-1.5">
-            <UserSummaryCard user={user} />
-          </div>
-          <div className="mt-1.5">
+        <main className="flex-1 overflow-hidden px-0 pb-4" role="main">
+          <PullToRefresh onRefresh={() => window.location.reload()}>
             <ErrorBoundary>
-              <SummarySection />
+              <FlashSaleBanner />
             </ErrorBoundary>
-          </div>
-          <div className="mt-1.5">
-            <ErrorBoundary>
-              <ActionCards />
-            </ErrorBoundary>
-          </div>
+            <div className="mt-1.5">
+              <UserSummaryCard user={user} />
+            </div>
+            <div className="mt-1.5">
+              <ErrorBoundary>
+                <SummarySection />
+              </ErrorBoundary>
+            </div>
+            <div className="mt-1.5">
+              <ErrorBoundary>
+                <ActionCards />
+              </ErrorBoundary>
+            </div>
+          </PullToRefresh>
         </main>
         <BottomNav />
         <NotificationSheet />
