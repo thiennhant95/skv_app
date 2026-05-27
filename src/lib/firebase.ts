@@ -34,41 +34,27 @@ export async function initFirebase(): Promise<boolean> {
   return initPromise;
 }
 
-function getAnySwRegistration(): Promise<ServiceWorkerRegistration | undefined> {
-  return new Promise((resolve) => {
-    if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) {
-      resolve(undefined);
-      return;
-    }
-    const timeout = setTimeout(() => resolve(undefined), 5000);
-
-    navigator.serviceWorker.ready.then((reg) => {
-      clearTimeout(timeout);
-      resolve(reg);
-    }).catch(() => {
-      clearTimeout(timeout);
-      resolve(undefined);
-    });
-  });
-}
-
 export async function getFcmToken(): Promise<string | null> {
   if (!messaging) return null;
   if (!VAPID_KEY) return null;
 
   try {
-    // Fire & forget: register SW for background push (không block)
-    if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/firebase-messaging-sw.js").catch(() => {});
-    }
-
-    // Lấy SW registration đang active với timeout
-    const swReg = await getAnySwRegistration();
-
-    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+    // Để Firebase tự detect SW (standard approach)
+    // Firebase sẽ tìm /firebase-messaging-sw.js ở root
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY });
     return token || null;
   } catch {
-    return null;
+    // Fallback: thử lại với SW registration hiện tại
+    try {
+      if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
+        const swReg = await navigator.serviceWorker.ready;
+        const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: swReg });
+        return token || null;
+      }
+      return null;
+    } catch {
+      return null;
+    }
   }
 }
 
