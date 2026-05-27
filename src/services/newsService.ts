@@ -17,7 +17,7 @@ export interface NewsItem {
 
 export async function getNews(page = 1): Promise<PaginatedItems<NewsItem>> {
   const res = await apiClient.get<ApiResponse<PaginatedItems<NewsItem>>>("/news", {
-    params: { page },
+    params: { page, limit: 20 },
   });
   return res.data.data;
 }

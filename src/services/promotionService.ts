@@ -3,7 +3,7 @@ import type { ApiResponse, PaginatedItems, Promotion } from "@/types";
 
 export async function getPromotions(page = 1): Promise<PaginatedItems<Promotion>> {
   const res = await apiClient.get<ApiResponse<PaginatedItems<Promotion>>>("/promotions", {
-    params: { page },
+    params: { page, limit: 20 },
   });
   return res.data.data;
 }

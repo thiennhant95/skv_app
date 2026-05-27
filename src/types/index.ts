@@ -80,6 +80,9 @@ export interface Notification {
 export interface NotificationsData {
   notifications: Notification[];
   unread_count: number;
+  total?: number;
+  page?: number;
+  limit?: number;
 }
 
 export interface Promotion {

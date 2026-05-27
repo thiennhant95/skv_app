@@ -1,8 +1,12 @@
 import apiClient from "./apiClient";
 import type { ApiResponse, NotificationsData } from "@/types";
 
-export async function getNotifications(): Promise<NotificationsData> {
-  const res = await apiClient.get<ApiResponse<NotificationsData>>("/notifications");
+const PAGE_LIMIT = 20;
+
+export async function getNotifications(page = 1): Promise<NotificationsData> {
+  const res = await apiClient.get<ApiResponse<NotificationsData>>("/notifications", {
+    params: { page, limit: PAGE_LIMIT },
+  });
   return res.data.data;
 }
 
