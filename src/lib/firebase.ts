@@ -20,19 +20,8 @@ export async function initFirebase(): Promise<boolean> {
   if (initPromise) return initPromise;
 
   initPromise = (async () => {
-    if (!getApps().length) {
-      app = initializeApp(firebaseConfig);
-    } else {
-      app = getApps()[0];
-    }
-
     try {
-      if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        const hasSw = registrations.some((r) => r.active || r.installing || r.waiting);
-        if (!hasSw) return false;
-      }
-
+      app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
       messaging = getMessaging(app);
       return true;
     } catch {
