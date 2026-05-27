@@ -8,8 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/store/authStore";
 import { loginApi } from "@/services/loginService";
-import { registerDeviceToken } from "@/services/deviceTokenService";
-import { initFcmOnLogin } from "@/services/fcmService";
 import { toast } from "@/components/ui/toast";
 
 const USERNAME_REGEX = /^[a-zA-Z0-9._-]{3,50}$/;
@@ -48,8 +46,6 @@ export default function LoginForm() {
     try {
       const data = await loginApi(username.trim(), password);
       login(data.token, data.user);
-      registerDeviceToken();
-      initFcmOnLogin();
       toast("Đăng nhập thành công!", "success");
       router.replace("/home");
     } catch (err) {

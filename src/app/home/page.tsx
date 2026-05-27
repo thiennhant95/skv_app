@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { useUiStore } from "@/store/uiStore";
 import { getNotifications } from "@/services/notificationService";
+import { initFcmOnLogin } from "@/services/fcmService";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import NetworkStatus from "@/components/NetworkStatus";
 import { HomeSkeleton } from "@/components/ui/skeleton";
@@ -42,6 +43,7 @@ export default function HomePage() {
       getNotifications()
         .then((data) => setUnreadCount(data.unread_count))
         .catch(() => {});
+      initFcmOnLogin();
     }
   }, [isAuthenticated, setUnreadCount]);
 
