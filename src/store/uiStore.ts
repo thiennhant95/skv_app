@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type ActiveSheet = "notifications" | "promotions" | "profile" | "help" | "ranking" | null;
+export type ActiveSheet = "notifications" | "promotions" | "referralF1" | "profile" | "help" | "ranking" | null;
 
 interface UiState {
   activeSheet: ActiveSheet;

@@ -40,11 +40,11 @@ export default function FlashSaleBanner() {
     return () => clearInterval(timer);
   }, [remaining]);
 
-  const displayTitle = banner?.title || "Flash Sale giảm 20% NRF2";
-  const displayContent = banner?.content || "";
-  const countdownText = remaining !== null && remaining > 0 ? formatCountdown(remaining) : null;
+  if (error || !banner) return null;
 
-  if (error) return null;
+  const displayTitle = banner.title;
+  const displayContent = banner.content || "";
+  const countdownText = remaining !== null && remaining > 0 ? formatCountdown(remaining) : null;
 
   return (
     <motion.div

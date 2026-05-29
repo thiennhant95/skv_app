@@ -118,7 +118,7 @@ export default function RankingSheet() {
                       <p className="text-xs font-bold text-emerald-600">
                         {member.system_order_quantity_month.toLocaleString()}
                       </p>
-                      <p className="text-[8px] text-gray-400">thùng</p>
+                       <p className="text-[8px] text-gray-400">lọ</p>
                     </div>
                   </motion.div>
                 );

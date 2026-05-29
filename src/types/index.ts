@@ -179,3 +179,31 @@ export interface CompetitionData {
   offset: number;
   items: CompetitionItem[];
 }
+
+export interface ReferralF1Item {
+  id: number;
+  user_id: number;
+  username: string;
+  fullname: string;
+  title: string;
+  month: string;
+  year: string;
+  personal_quantity_month: number;
+  system_quantity_month: number;
+  order_ids: string;
+  total_protandim: number;
+  total_immucan: number;
+  total_total_kiddy: number;
+  total_coffee: number;
+  total_fucoidan: number;
+  total_nuoc: number;
+  total_taodo: number;
+  total_provegan: number;
+}
+
+export interface ReferralF1Data {
+  total: number;
+  limit: number;
+  page: number;
+  items: ReferralF1Item[];
+}

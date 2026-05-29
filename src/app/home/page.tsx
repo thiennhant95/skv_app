@@ -20,8 +20,10 @@ import PromotionSheet from "@/components/PromotionSheet";
 import ProfileSheet from "@/components/ProfileSheet";
 import HelpSheet from "@/components/HelpSheet";
 import RankingSheet from "@/components/RankingSheet";
+import ReferralF1Sheet from "@/components/ReferralF1Sheet";
 import WebViewSheet from "@/components/WebViewSheet";
 import PullToRefresh from "@/components/PullToRefresh";
+import FloatingZaloButton from "@/components/FloatingZaloButton";
 
 export default function HomePage() {
   const router = useRouter();
@@ -90,7 +92,9 @@ export default function HomePage() {
         <ProfileSheet />
         <HelpSheet />
         <RankingSheet />
+        <ReferralF1Sheet />
         <WebViewSheet />
+        <FloatingZaloButton />
       </div>
     </ErrorBoundary>
   );

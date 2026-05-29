@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Home, Bell, Gift, User } from "lucide-react";
+import { Home, Bell, Users, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/store/uiStore";
 
@@ -11,11 +11,11 @@ const navItems: Array<{
   label: string;
   labelEn: string;
   path: string | null;
-  sheet: "notifications" | "promotions" | "profile" | null;
+  sheet: "notifications" | "referralF1" | "profile" | null;
 }> = [
   { icon: Home, label: "Trang chủ", labelEn: "Home", path: "/home", sheet: null },
   { icon: Bell, label: "Thông báo", labelEn: "Notifications", path: null, sheet: "notifications" },
-  { icon: Gift, label: "Khuyến mãi", labelEn: "Promotions", path: null, sheet: "promotions" },
+  { icon: Users, label: "Doanh số F1", labelEn: "F1 Sales", path: null, sheet: "referralF1" },
   { icon: User, label: "Cá nhân", labelEn: "Profile", path: null, sheet: "profile" },
 ];
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { User, Loader2, LogOut, Mail, Phone, Shield, CheckCircle, UserPlus, MapPin, Calendar, Award } from "lucide-react";
+import { User, Loader2, LogOut, Mail, Phone, Shield, CheckCircle, UserPlus, MapPin, Calendar, Award, Copy, Check } from "lucide-react";
 import BottomSheet from "@/components/ui/bottom-sheet";
 import { useUiStore } from "@/store/uiStore";
 import { useAuthStore } from "@/store/authStore";
@@ -17,6 +17,7 @@ export default function ProfileSheet() {
   const [profile, setProfile] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const fetchProfile = useCallback(async () => {
     setLoading(true);
@@ -49,9 +50,23 @@ export default function ProfileSheet() {
     ? profile.avatar
     : null;
 
+  const MIN_DATE_TS = 1701388800; // 2023-12-01 00:00:00 UTC
+
   const formatDate = (ts: number) => {
-    const d = new Date(ts * 1000);
+    const effectiveTs = ts < MIN_DATE_TS ? MIN_DATE_TS : ts;
+    const d = new Date(effectiveTs * 1000);
     return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+  };
+
+  const referralLink = profile ? `https://protandimnrf2.vn/authorize/register?ref=${profile.username}` : "";
+
+  const copyToClipboard = async () => {
+    if (!referralLink) return;
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
   };
 
   return (
@@ -78,9 +93,14 @@ export default function ProfileSheet() {
             )}
             <h2 className="mt-3 text-lg font-bold text-gray-900">{profile.fullname}</h2>
             <p className="text-sm text-gray-500">@{profile.username}</p>
-            {profile.level > 0 && (
+            {profile.title && (
               <span className="mt-1.5 inline-block rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 px-3 py-0.5 text-xs font-semibold text-white shadow-sm">
-                Level {profile.level}
+                {profile.title}
+              </span>
+            )}
+            {profile.discount_percent > 0 && (
+              <span className="mt-1 inline-block text-xs font-medium text-amber-600">
+                Chiết khấu: {profile.discount_percent}%
               </span>
             )}
           </div>
@@ -149,6 +169,19 @@ export default function ProfileSheet() {
                 </div>
               </div>
             )}
+            <div className="flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3">
+              <UserPlus className="h-5 w-5 text-gray-400" />
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-gray-400">Link giới thiệu</p>
+                <p className="text-sm font-medium text-gray-900 truncate">{referralLink}</p>
+              </div>
+              <button
+                onClick={copyToClipboard}
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm"
+              >
+                {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4 text-gray-400" />}
+              </button>
+            </div>
           </div>
 
           <button
