@@ -5,13 +5,11 @@ import { motion } from "framer-motion";
 import { Users, Search, Loader2, ChevronDown } from "lucide-react";
 import BottomSheet from "@/components/ui/bottom-sheet";
 import { useUiStore } from "@/store/uiStore";
-import { useAuthStore } from "@/store/authStore";
 import { getReferralF1 } from "@/services/referralF1Service";
 import type { ReferralF1Item } from "@/types";
 
 export default function ReferralF1Sheet() {
   const { activeSheet, closeSheet } = useUiStore();
-  const user = useAuthStore((s) => s.user);
   const open = activeSheet === "referralF1";
   const [isAdmin, setIsAdmin] = useState(false);
 

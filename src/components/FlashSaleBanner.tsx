@@ -54,14 +54,14 @@ export default function FlashSaleBanner() {
       className="mx-4 overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500 via-rose-400 to-pink-500 shadow-lg shadow-rose-200/50"
     >
       <a
-        href={banner?.link || "#"}
+        href={banner.link || "#"}
         target="_self"
         rel="noopener noreferrer"
         className="block"
       >
         <div className="flex items-center gap-2 px-4 py-3">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
-            {banner?.image ? (
+            {banner.image ? (
               <img src={banner.image} alt="" className="h-6 w-6 rounded object-cover" />
             ) : (
               <Clock className="h-4 w-4 text-white" />
@@ -78,7 +78,7 @@ export default function FlashSaleBanner() {
               </p>
             )}
           </div>
-          {!banner?.image && <Sparkles className="h-4 w-4 text-white/40 shrink-0" />}
+          {!banner.image && <Sparkles className="h-4 w-4 text-white/40 shrink-0" />}
         </div>
       </a>
     </motion.div>
