@@ -66,7 +66,7 @@ export default function HomePage() {
       <div className="flex h-dvh flex-col bg-gray-50/50">
         <NetworkStatus />
         <Header />
-        <main className="flex-1 overflow-hidden px-0 pb-4" role="main">
+        <main className="flex-1 overflow-hidden px-0 pb-20" role="main">
           <PullToRefresh onRefresh={() => window.location.reload()}>
             <ErrorBoundary>
               <FlashSaleBanner />
