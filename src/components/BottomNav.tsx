@@ -15,7 +15,7 @@ const navItems: Array<{
 }> = [
   { icon: Home, label: "Trang chủ", labelEn: "Home", path: "/home", sheet: null },
   { icon: Bell, label: "Thông báo", labelEn: "Notifications", path: null, sheet: "notifications" },
-  { icon: Users, label: "Doanh số F1", labelEn: "F1 Sales", path: null, sheet: "referralF1" },
+  { icon: Users, label: "Doanh số", labelEn: "Sales", path: null, sheet: "referralF1" },
   { icon: User, label: "Cá nhân", labelEn: "Profile", path: null, sheet: "profile" },
 ];
 

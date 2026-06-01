@@ -95,7 +95,7 @@ export default function ReferralF1Sheet() {
   const totalPersonal = items.reduce((sum, i) => sum + i.personal_quantity_month, 0);
 
   return (
-    <BottomSheet open={open} onClose={closeSheet} title="Doanh số F1">
+    <BottomSheet open={open} onClose={closeSheet} title="Doanh số">
       <div className="flex items-center gap-2 mb-3">
           {isAdmin && (
             <div className="flex-1">
@@ -146,12 +146,12 @@ export default function ReferralF1Sheet() {
       ) : items.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 gap-2">
           <Users className="h-10 w-10 text-gray-300" />
-          <p className="text-sm text-gray-400">Bấm Search để xem doanh số F1</p>
+          <p className="text-sm text-gray-400">Bấm Search để xem doanh số</p>
         </div>
       ) : (
         <div className="pb-4">
           <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-amber-50 to-yellow-50 px-4 py-3 mb-4">
-            <span className="text-sm font-medium text-gray-600">Thành viên F1</span>
+            <span className="text-sm font-medium text-gray-600">Thành viên</span>
             <span className="text-lg font-bold text-amber-600">{total}</span>
           </div>
           <div className="space-y-2">
@@ -204,7 +204,7 @@ export default function ReferralF1Sheet() {
 
           {totalPersonal > 0 && (
             <div className="mt-4 rounded-xl bg-gradient-to-r from-amber-50 to-yellow-50 px-4 py-3 text-center">
-              <p className="text-xs text-gray-500">Tổng doanh số F1</p>
+              <p className="text-xs text-gray-500">Tổng doanh số</p>
               <p className="text-lg font-bold text-amber-600">{totalPersonal}</p>
             </div>
           )}
