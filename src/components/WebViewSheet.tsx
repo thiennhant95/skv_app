@@ -13,12 +13,14 @@ export default function WebViewSheet() {
     if (webviewUrl) window.open(webviewUrl, "_blank");
   };
 
-  const domain = webviewUrl ? new URL(webviewUrl).hostname : "";
+  const url = webviewUrl ? new URL(webviewUrl) : null;
+  const domain = url?.hostname ?? "";
+  const path = url?.pathname ?? "";
 
   const title =
-    domain === "suckhoevangpro.vn"
+    path === "/muasi"
       ? "Mua hàng sỉ"
-      : domain === "tinhhoabiolife.vn"
+      : path === "/muale"
       ? "Mua hàng lẻ"
       : domain === "protandimnrf2.vn"
       ? "Quản lý đơn hàng & Doanh số"
