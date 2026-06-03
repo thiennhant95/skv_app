@@ -15,12 +15,12 @@ export default function WebViewSheet() {
 
   const url = webviewUrl ? new URL(webviewUrl) : null;
   const domain = url?.hostname ?? "";
-  const path = url?.pathname ?? "";
+  const type = url?.searchParams.get("type") ?? "";
 
   const title =
-    path === "/muasi"
+    type === "muasi"
       ? "Mua hàng sỉ"
-      : path === "/muale"
+      : type === "muale"
       ? "Mua hàng lẻ"
       : domain === "protandimnrf2.vn"
       ? "Quản lý đơn hàng & Doanh số"

@@ -1,4 +1,4 @@
-export function buildExternalUrl(domain: string, username?: string, path?: string): string {
+export function buildExternalUrl(domain: string, username?: string, type?: string): string {
   let token: string | null = null;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("skv_token");
@@ -25,7 +25,7 @@ export function buildExternalUrl(domain: string, username?: string, path?: strin
   if (username) params.set("username", username);
   params.set("source", "protandimnrf2.vn");
   if (token) params.set("token", token);
+  if (type) params.set("type", type);
 
-  const basePath = path || "affiliate-link";
-  return `https://${domain}/${basePath}?${params.toString()}`;
+  return `https://${domain}/affiliate-link?${params.toString()}`;
 }

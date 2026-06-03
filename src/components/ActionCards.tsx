@@ -17,7 +17,7 @@ const actions = [
     description: "Dành cho mua trên 50 lọ và lưu kho",
     icon: PackageSearch,
     domain: "suckhoevangpro.vn",
-    slug: "muasi",
+    type: "muasi",
     gradient: "from-violet-50 to-purple-50",
     iconBg: "bg-violet-100",
     iconColor: "text-violet-600",
@@ -27,7 +27,7 @@ const actions = [
     description: "Dành cho mua dưới 50 lọ",
     icon: ShoppingBag,
     domain: "suckhoevangpro.vn",
-    slug: "muale",
+    type: "muale",
     gradient: "from-orange-50 to-amber-50",
     iconBg: "bg-orange-100",
     iconColor: "text-orange-600",
@@ -72,7 +72,7 @@ export default function ActionCards() {
               if (isPromotion) {
                 openSheet("promotions");
               } else if (item.domain) {
-                openWebview(buildExternalUrl(item.domain, username, item.slug));
+                openWebview(buildExternalUrl(item.domain, username, item.type));
               }
             }}
             aria-label={item.title}
