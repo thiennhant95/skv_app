@@ -72,12 +72,7 @@ export default function ActionCards() {
               if (isPromotion) {
                 openSheet("promotions");
               } else if (item.domain) {
-                const url = buildExternalUrl(item.domain, username, item.type);
-                if (item.domain === "protandimnrf2.vn") {
-                  openWebview(url);
-                } else {
-                  window.open(url, "_blank");
-                }
+                openWebview(buildExternalUrl(item.domain, username, item.type));
               }
             }}
             aria-label={item.title}
