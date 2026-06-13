@@ -2,16 +2,12 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { useUiStore } from "@/store/uiStore";
 
 export default function WebViewSheet() {
   const { webviewUrl, closeWebview } = useUiStore();
   const [loading, setLoading] = useState(true);
-
-  const openInBrowser = () => {
-    if (webviewUrl) window.open(webviewUrl, "_blank");
-  };
 
   const url = webviewUrl ? new URL(webviewUrl) : null;
   const domain = url?.hostname ?? "";
@@ -30,31 +26,6 @@ export default function WebViewSheet() {
     <AnimatePresence>
       {webviewUrl && (
         <div className="fixed inset-0 z-[60] flex flex-col bg-white">
-          <motion.div
-            initial={{ y: -50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white safe-top"
-          >
-            <button
-              onClick={closeWebview}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-              aria-label="Quay lại"
-            >
-              <ArrowLeft className="h-5 w-5 text-gray-700" />
-            </button>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-gray-900 truncate">{title}</p>
-              <p className="text-[10px] text-gray-400 truncate">{domain}</p>
-            </div>
-            <button
-              onClick={openInBrowser}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-              aria-label="Mở trong trình duyệt"
-            >
-              <ExternalLink className="h-4 w-4 text-gray-700" />
-            </button>
-          </motion.div>
-
           <div className="flex-1 relative bg-white">
             {loading && (
               <div className="absolute inset-0 flex items-center justify-center bg-white z-10">
@@ -70,6 +41,13 @@ export default function WebViewSheet() {
               onLoad={() => setLoading(false)}
               title={title}
             />
+            <button
+              onClick={closeWebview}
+              className="absolute top-4 left-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm active:scale-95 transition-transform"
+              aria-label="Quay lại"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </button>
           </div>
         </div>
       )}
