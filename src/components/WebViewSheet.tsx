@@ -43,7 +43,7 @@ export default function WebViewSheet() {
             />
             <button
               onClick={closeWebview}
-              className="absolute top-4 left-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm active:scale-95 transition-transform"
+              className="absolute top-12 left-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow-lg text-gray-800 backdrop-blur-sm active:scale-95 transition-transform"
               aria-label="Quay lại"
             >
               <ArrowLeft className="h-5 w-5" />
