@@ -16,11 +16,18 @@ export default function AffiliateSection() {
   useEffect(() => {
     getAffiliateInfo()
       .then(setData)
-      .catch(() => {})
+      .catch((e) => console.error("AffiliateSection error:", e))
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading || !data) return null;
+  if (loading) return null;
+  if (!data) {
+    return (
+      <div className="mx-4 rounded-2xl bg-white border border-gray-100 shadow-sm px-4 py-4">
+        <p className="text-sm text-gray-400 text-center">Tiếp thị liên kết chưa sẵn sàng</p>
+      </div>
+    );
+  }
 
   const copyLink = async () => {
     try {
