@@ -12,7 +12,7 @@ const fallback: DashboardData = {
   totalProtandim: 0, totalImmucan: 0, totalKiddy: 0, totalCoffee: 0,
   totalFucoidan: 0, totalNuoc: 0, totalTaodo: 0, totalProvegan: 0,
   totalKiddyBox: 0, totalCoffeeBox: 0, totalFucoidanBox: 0, totalNuocBox: 0, totalTaodoBox: 0,
-  totalDoanhSo: 0, totalAmount: 0,
+  totalDoanhSo: 0, totalAmount: 0, personal_order_quantity_month: 0,
   userFund: {
     total_personal_quantity: 0, total_system_quantity: 0, total_quantity: 0,
     fund_travel: 0, fund_reward: 0, fund_community: 0, total_fund: 0,
@@ -75,7 +75,7 @@ export default function SummarySection() {
   }
 
   const d = dashboard || fallback;
-  const personalQty = d.userFund.total_personal_quantity;
+  const personalQty = d.personal_order_quantity_month;
   const totalDoanhSo = d.totalDoanhSo;
 
   const products = productConfig.map((p) => ({

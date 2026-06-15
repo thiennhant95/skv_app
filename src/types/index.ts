@@ -114,6 +114,7 @@ export interface DashboardData {
   totalTaodoBox: number;
   totalDoanhSo: number;
   totalAmount: number;
+  personal_order_quantity_month: number;
   userFund: {
     total_personal_quantity: number;
     total_system_quantity: number;
