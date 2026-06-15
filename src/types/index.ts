@@ -220,6 +220,21 @@ export interface AffiliateStats {
   month_orders: number;
   month_quantity: number;
   month_commission_expected: number;
+  total_commission_paid: number;
+  month_commission_paid: number;
+}
+
+export interface CommissionItem {
+  amount: number;
+  message: string;
+  created_at: number;
+}
+
+export interface CommissionHistory {
+  total: number;
+  limit: number;
+  offset: number;
+  items: CommissionItem[];
 }
 
 export interface AffiliateProduct {

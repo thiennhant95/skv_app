@@ -2,11 +2,11 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Copy, Check, ExternalLink, BarChart3, MousePointerClick, ShoppingCart, Package, TrendingUp, Globe } from "lucide-react";
+import { Copy, Check, BarChart3, MousePointerClick, ShoppingCart, Package, TrendingUp, Globe, DollarSign, ChevronDown, History } from "lucide-react";
 import BottomSheet from "@/components/ui/bottom-sheet";
 import { useUiStore } from "@/store/uiStore";
-import { getAffiliateInfo } from "@/services/affiliateService";
-import type { AffiliateInfo } from "@/types";
+import { getAffiliateInfo, getCommissionHistory } from "@/services/affiliateService";
+import type { AffiliateInfo, CommissionItem } from "@/types";
 
 export default function AffiliateSheet() {
   const { activeSheet, closeSheet } = useUiStore();
@@ -16,6 +16,11 @@ export default function AffiliateSheet() {
   const [error, setError] = useState("");
   const [copiedLink, setCopiedLink] = useState("");
   const [copiedProductId, setCopiedProductId] = useState<number | null>(null);
+  const [history, setHistory] = useState<CommissionItem[]>([]);
+  const [historyTotal, setHistoryTotal] = useState(0);
+  const [historyOffset, setHistoryOffset] = useState(0);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -30,8 +35,28 @@ export default function AffiliateSheet() {
     }
   }, []);
 
+  const fetchHistory = useCallback(async (append = false) => {
+    setLoadingHistory(true);
+    try {
+      const offset = append ? historyOffset : 0;
+      const res = await getCommissionHistory(20, offset);
+      if (append) {
+        setHistory((prev) => [...prev, ...res.items]);
+      } else {
+        setHistory(res.items);
+      }
+      setHistoryTotal(res.total);
+      setHistoryOffset(offset + res.items.length);
+    } catch {}
+    setLoadingHistory(false);
+  }, [historyOffset]);
+
   useEffect(() => {
-    if (open) fetchData();
+    if (open) {
+      fetchData();
+      setHistory([]);
+      setHistoryOffset(0);
+    }
   }, [open, fetchData]);
 
   const copyToClipboard = async (text: string, key: string) => {
@@ -45,6 +70,10 @@ export default function AffiliateSheet() {
   const stats = data?.stats;
   const topProducts = data?.top_products ?? [];
   const bySource = data?.by_source ?? [];
+
+  const conversionClickToOrder = stats && stats.total_clicks > 0
+    ? ((stats.total_orders / stats.total_clicks) * 100).toFixed(1)
+    : "0.0";
 
   return (
     <BottomSheet open={open} onClose={closeSheet} title="Tiếp thị liên kết">
@@ -74,31 +103,119 @@ export default function AffiliateSheet() {
             </div>
           </div>
 
-          {/* Stats */}
+          {/* Stats - This month */}
           {stats && (
-            <div className="grid grid-cols-4 gap-2">
-              <div className="rounded-xl bg-gray-50 px-3 py-3 text-center">
-                <MousePointerClick className="h-4 w-4 text-amber-500 mx-auto mb-1" />
-                <p className="text-lg font-bold text-gray-900">{stats.month_clicks}</p>
-                <p className="text-[10px] text-gray-400">Click</p>
+            <>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide px-1">Tháng này</p>
+              <div className="grid grid-cols-4 gap-2">
+                <div className="rounded-xl bg-gray-50 px-3 py-3 text-center">
+                  <MousePointerClick className="h-4 w-4 text-amber-500 mx-auto mb-1" />
+                  <p className="text-lg font-bold text-gray-900">{stats.month_clicks}</p>
+                  <p className="text-[10px] text-gray-400">Click</p>
+                </div>
+                <div className="rounded-xl bg-gray-50 px-3 py-3 text-center">
+                  <ShoppingCart className="h-4 w-4 text-blue-500 mx-auto mb-1" />
+                  <p className="text-lg font-bold text-gray-900">{stats.month_add_to_cart}</p>
+                  <p className="text-[10px] text-gray-400">Giỏ hàng</p>
+                </div>
+                <div className="rounded-xl bg-gray-50 px-3 py-3 text-center">
+                  <Package className="h-4 w-4 text-emerald-500 mx-auto mb-1" />
+                  <p className="text-lg font-bold text-gray-900">{stats.month_quantity}</p>
+                  <p className="text-[10px] text-gray-400">SL</p>
+                </div>
+                <div className="rounded-xl bg-amber-50 px-3 py-3 text-center">
+                  <TrendingUp className="h-4 w-4 text-amber-600 mx-auto mb-1" />
+                  <p className="text-lg font-bold text-amber-600">{stats.month_commission_expected.toLocaleString()}đ</p>
+                  <p className="text-[10px] text-gray-400">HH dự kiến</p>
+                </div>
               </div>
-              <div className="rounded-xl bg-gray-50 px-3 py-3 text-center">
-                <ShoppingCart className="h-4 w-4 text-blue-500 mx-auto mb-1" />
-                <p className="text-lg font-bold text-gray-900">{stats.month_orders}</p>
-                <p className="text-[10px] text-gray-400">Đơn</p>
+
+              {/* Conversion rate */}
+              <div className="rounded-xl bg-gray-50 px-4 py-3 flex items-center justify-between">
+                <span className="text-sm text-gray-600">Tỷ lệ chuyển đổi (click → đơn)</span>
+                <span className="text-sm font-bold text-emerald-600">{conversionClickToOrder}%</span>
               </div>
-              <div className="rounded-xl bg-gray-50 px-3 py-3 text-center">
-                <Package className="h-4 w-4 text-emerald-500 mx-auto mb-1" />
-                <p className="text-lg font-bold text-gray-900">{stats.month_quantity}</p>
-                <p className="text-[10px] text-gray-400">SL</p>
+
+              {/* Total Stats */}
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide px-1">Tổng quan</p>
+              <div className="grid grid-cols-4 gap-2">
+                <div className="rounded-xl bg-gray-100/50 px-3 py-2.5 text-center">
+                  <p className="text-sm font-bold text-gray-900">{stats.total_clicks}</p>
+                  <p className="text-[9px] text-gray-400">Click</p>
+                </div>
+                <div className="rounded-xl bg-gray-100/50 px-3 py-2.5 text-center">
+                  <p className="text-sm font-bold text-gray-900">{stats.total_orders}</p>
+                  <p className="text-[9px] text-gray-400">Đơn</p>
+                </div>
+                <div className="rounded-xl bg-gray-100/50 px-3 py-2.5 text-center">
+                  <p className="text-sm font-bold text-gray-900">{stats.total_quantity}</p>
+                  <p className="text-[9px] text-gray-400">SL</p>
+                </div>
+                <div className="rounded-xl bg-amber-50 px-3 py-2.5 text-center">
+                  <p className="text-sm font-bold text-amber-600">{stats.total_commission_paid.toLocaleString()}đ</p>
+                  <p className="text-[9px] text-gray-400">Đã nhận</p>
+                </div>
               </div>
-              <div className="rounded-xl bg-amber-50 px-3 py-3 text-center">
-                <TrendingUp className="h-4 w-4 text-amber-600 mx-auto mb-1" />
-                <p className="text-lg font-bold text-amber-600">{stats.month_commission_expected.toLocaleString()}đ</p>
-                <p className="text-[10px] text-gray-400">HH dự kiến</p>
-              </div>
-            </div>
+
+              {/* Commission paid this month */}
+              {stats.month_commission_paid > 0 && (
+                <div className="rounded-xl bg-emerald-50 px-4 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="h-5 w-5 text-emerald-500" />
+                    <span className="text-sm text-gray-600">Hoa hồng tháng này</span>
+                  </div>
+                  <span className="text-sm font-bold text-emerald-600">{stats.month_commission_paid.toLocaleString()}đ</span>
+                </div>
+              )}
+            </>
           )}
+
+          {/* Commission History */}
+          <div>
+            <button
+              onClick={() => {
+                setShowHistory(!showHistory);
+                if (!showHistory && history.length === 0) fetchHistory();
+              }}
+              className="flex items-center justify-between w-full px-1 py-2"
+            >
+              <div className="flex items-center gap-2">
+                <History className="h-4 w-4 text-gray-500" />
+                <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">Lịch sử trả thưởng</span>
+              </div>
+              <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${showHistory ? "rotate-180" : ""}`} />
+            </button>
+            {showHistory && (
+              <div className="space-y-1.5 mt-1">
+                {history.length === 0 && !loadingHistory ? (
+                  <p className="text-xs text-gray-400 text-center py-4">Chưa có giao dịch</p>
+                ) : (
+                  history.map((item, i) => (
+                    <div key={i} className="flex items-center justify-between rounded-xl bg-gray-50 px-3 py-2.5">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-medium text-gray-700 truncate">{item.message}</p>
+                        <p className="text-[10px] text-gray-400">{new Date(item.created_at * 1000).toLocaleDateString("vi-VN")}</p>
+                      </div>
+                      <span className="text-sm font-bold text-emerald-600 shrink-0 ml-2">+{item.amount.toLocaleString()}đ</span>
+                    </div>
+                  ))
+                )}
+                {loadingHistory && (
+                  <div className="flex justify-center py-2">
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-amber-400 border-t-transparent" />
+                  </div>
+                )}
+                {historyTotal > history.length && !loadingHistory && (
+                  <button
+                    onClick={() => fetchHistory(true)}
+                    className="w-full text-center text-xs text-amber-600 py-2"
+                  >
+                    Xem thêm ({history.length}/{historyTotal})
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
 
           {/* Top Products */}
           {topProducts.length > 0 && (

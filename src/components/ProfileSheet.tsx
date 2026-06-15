@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { User, Loader2, LogOut, Mail, Phone, Shield, CheckCircle, UserPlus, MapPin, Calendar, Award, Copy, Check, BarChart3 } from "lucide-react";
+import { User, Loader2, LogOut, Mail, Phone, Shield, CheckCircle, UserPlus, MapPin, Calendar, Award, Copy, Check } from "lucide-react";
 import BottomSheet from "@/components/ui/bottom-sheet";
 import { useUiStore } from "@/store/uiStore";
 import { useAuthStore } from "@/store/authStore";
@@ -183,14 +183,6 @@ export default function ProfileSheet() {
               </button>
             </div>
             </div>
-
-          <button
-            onClick={() => { closeSheet(); useUiStore.getState().openSheet("affiliate"); }}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 py-3.5 text-sm font-semibold text-amber-700 transition-colors hover:bg-amber-100"
-          >
-            <BarChart3 className="h-5 w-5" />
-            Tiếp thị liên kết
-          </button>
 
           <button
             onClick={handleLogout}

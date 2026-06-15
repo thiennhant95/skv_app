@@ -22,6 +22,7 @@ import HelpSheet from "@/components/HelpSheet";
 import RankingSheet from "@/components/RankingSheet";
 import ReferralF1Sheet from "@/components/ReferralF1Sheet";
 import AffiliateSheet from "@/components/AffiliateSheet";
+import AffiliateSection from "@/components/AffiliateSection";
 import WebViewSheet from "@/components/WebViewSheet";
 import PullToRefresh from "@/components/PullToRefresh";
 import FloatingZaloButton from "@/components/FloatingZaloButton";
@@ -83,6 +84,11 @@ export default function HomePage() {
             <div className="mt-1.5">
               <ErrorBoundary>
                 <ActionCards />
+              </ErrorBoundary>
+            </div>
+            <div className="mt-1.5">
+              <ErrorBoundary>
+                <AffiliateSection />
               </ErrorBoundary>
             </div>
           </PullToRefresh>
