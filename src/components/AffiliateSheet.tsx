@@ -223,12 +223,18 @@ export default function AffiliateSheet() {
               <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">Sản phẩm được quan tâm</p>
               <div className="space-y-1.5">
                 {topProducts.map((p, i) => (
-                  <div key={p.product_id} className="flex items-center justify-between rounded-xl bg-gray-50 px-3 py-2.5">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-[10px] font-bold text-amber-600">{i + 1}</span>
-                      <span className="text-sm font-medium text-gray-700 truncate">{p.name}</span>
+                  <div key={p.product_id} className="rounded-xl bg-gray-50 px-3 py-2.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-amber-100 text-[10px] font-bold text-amber-600">{i + 1}</span>
+                        <span className="text-sm font-medium text-gray-700 truncate">{p.name}</span>
+                      </div>
                     </div>
-                    <span className="text-xs text-gray-400 shrink-0 ml-2">{p.clicks} click</span>
+                    <div className="flex items-center gap-3 mt-1.5 pl-7">
+                      <span className="text-[11px] text-gray-400"><span className="font-semibold text-gray-600">{p.clicks}</span> click</span>
+                      <span className="text-[11px] text-gray-400"><span className="font-semibold text-blue-500">{p.add_to_cart}</span> giỏ</span>
+                      <span className="text-[11px] text-gray-400"><span className="font-semibold text-emerald-500">{p.orders}</span> đơn</span>
+                    </div>
                   </div>
                 ))}
               </div>

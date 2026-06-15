@@ -248,6 +248,8 @@ export interface TopProduct {
   product_id: number;
   name: string;
   clicks: number;
+  add_to_cart: number;
+  orders: number;
 }
 
 export interface BySource {
