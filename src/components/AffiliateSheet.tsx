@@ -121,15 +121,29 @@ export default function AffiliateSheet() {
           {/* Product Links */}
           <div>
             <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">Link theo sản phẩm</p>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {data.products.map((p) => (
-                <div key={p.id} className="flex items-center gap-2 rounded-xl bg-gray-50 px-3 py-2.5">
-                  <code className="flex-1 text-[11px] text-gray-600 truncate">{p.affiliate_link}</code>
+                <div key={p.id} className="flex items-center gap-3 rounded-xl bg-gray-50 px-3 py-2.5">
+                  <div className="shrink-0 h-10 w-10 rounded-lg bg-white overflow-hidden flex items-center justify-center border border-gray-100">
+                    {p.image ? (
+                      <img src={p.image} alt={p.name} className="h-full w-full object-cover" />
+                    ) : (
+                      <Package className="h-5 w-5 text-gray-300" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{p.name}</p>
+                    <code className="text-[10px] text-gray-400 truncate block">{p.affiliate_link}</code>
+                  </div>
                   <button
-                    onClick={() => copyToClipboard(p.affiliate_link, `prod-${p.id}`)}
-                    className="shrink-0 flex h-7 w-7 items-center justify-center rounded-lg bg-white text-gray-400 hover:text-amber-600 border border-gray-200 transition-colors"
+                    onClick={() => {
+                      navigator.clipboard.writeText(p.affiliate_link);
+                      setCopiedProductId(p.id);
+                      setTimeout(() => setCopiedProductId(null), 2000);
+                    }}
+                    className="shrink-0 flex h-8 w-8 items-center justify-center rounded-lg bg-white text-gray-400 hover:text-amber-600 border border-gray-200 transition-colors"
                   >
-                    {copiedProductId === p.id ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                    {copiedProductId === p.id ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
                   </button>
                 </div>
               ))}

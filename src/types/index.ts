@@ -225,6 +225,7 @@ export interface AffiliateStats {
 export interface AffiliateProduct {
   id: number;
   name: string;
+  image: string | null;
   affiliate_link: string;
 }
 
