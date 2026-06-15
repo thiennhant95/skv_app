@@ -218,9 +218,9 @@ export default function AffiliateSheet() {
           </div>
 
           {/* Top Products */}
-          {topProducts.length > 0 && (
-            <div>
-              <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">Sản phẩm được quan tâm</p>
+          <div>
+            <p className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wide">Sản phẩm được quan tâm</p>
+            {topProducts.length > 0 ? (
               <div className="space-y-1.5">
                 {topProducts.map((p, i) => (
                   <div key={p.product_id} className="rounded-xl bg-gray-50 px-3 py-2.5">
@@ -238,8 +238,10 @@ export default function AffiliateSheet() {
                   </div>
                 ))}
               </div>
-            </div>
-          )}
+            ) : (
+              <p className="text-xs text-gray-400 text-center py-3">Chưa có dữ liệu (cần có click kèm sản phẩm)</p>
+            )}
+          </div>
 
           {/* Product Links */}
           <div>
