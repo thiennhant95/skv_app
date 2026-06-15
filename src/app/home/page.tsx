@@ -21,6 +21,7 @@ import ProfileSheet from "@/components/ProfileSheet";
 import HelpSheet from "@/components/HelpSheet";
 import RankingSheet from "@/components/RankingSheet";
 import ReferralF1Sheet from "@/components/ReferralF1Sheet";
+import AffiliateSheet from "@/components/AffiliateSheet";
 import WebViewSheet from "@/components/WebViewSheet";
 import PullToRefresh from "@/components/PullToRefresh";
 import FloatingZaloButton from "@/components/FloatingZaloButton";
@@ -93,6 +94,7 @@ export default function HomePage() {
         <HelpSheet />
         <RankingSheet />
         <ReferralF1Sheet />
+        <AffiliateSheet />
         <WebViewSheet />
         <FloatingZaloButton />
       </div>
