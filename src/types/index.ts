@@ -208,3 +208,59 @@ export interface ReferralF1Data {
   page: number;
   items: ReferralF1Item[];
 }
+
+// Affiliate
+export interface AffiliateStats {
+  total_clicks: number;
+  total_add_to_cart: number;
+  total_orders: number;
+  total_quantity: number;
+  month_clicks: number;
+  month_add_to_cart: number;
+  month_orders: number;
+  month_quantity: number;
+  month_commission_expected: number;
+  total_commission_paid: number;
+  month_commission_paid: number;
+}
+
+export interface CommissionItem {
+  amount: number;
+  message: string;
+  created_at: number;
+}
+
+export interface CommissionHistory {
+  total: number;
+  limit: number;
+  offset: number;
+  items: CommissionItem[];
+}
+
+export interface AffiliateProduct {
+  id: number;
+  name: string;
+  image: string | null;
+  affiliate_link: string;
+}
+
+export interface TopProduct {
+  product_id: number;
+  name: string;
+  clicks: number;
+  add_to_cart: number;
+  orders: number;
+}
+
+export interface BySource {
+  utm_source: string;
+  clicks: number;
+}
+
+export interface AffiliateInfo {
+  affiliate_link: string;
+  products: AffiliateProduct[];
+  stats: AffiliateStats;
+  top_products: TopProduct[];
+  by_source: BySource[];
+}

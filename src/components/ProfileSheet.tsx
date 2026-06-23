@@ -182,7 +182,7 @@ export default function ProfileSheet() {
                 {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4 text-gray-400" />}
               </button>
             </div>
-          </div>
+            </div>
 
           <button
             onClick={handleLogout}
