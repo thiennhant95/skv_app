@@ -26,6 +26,8 @@ export function buildExternalUrl(domain: string, username?: string, type?: strin
   params.set("source", "protandimnrf2.vn");
   if (token) params.set("token", token);
   if (type) params.set("type", type);
+  // Co PWA (mo trong app cai san): skv chi mo mua dai ly khi co co nay
+  params.set("pwa", "1");
 
   return `https://${domain}/affiliate-link?${params.toString()}`;
 }
